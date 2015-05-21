@@ -73,7 +73,7 @@ function show_bar_chart(container, chart_data) {
             trigger: 'axis'
         },
         legend: {
-            data:['number of people'],
+            data:chart_data['names'],
             y: 'bottom'
         },
         toolbox: {
@@ -105,26 +105,57 @@ function show_bar_chart(container, chart_data) {
 
 }
 
+/**
+ * 生成饼图数据
+ * @param title 图的标题
+ * @param name 图中的元素代表的意义
+ * @param labels 有多少块分块
+ * @param raw_data 数组，分块对应的数据量
+ */
+function generate_pie_chart_data(title, name, labels, raw_data) {
+    var ret = {
+        title:title,
+        name:name,
+        labels:labels
+    };
+    var values = [];
+    for (var i = 0; i < raw_data.length; ++i)
+    values.push({value:raw_data[i], name:labels[i]});
+    ret['values'] = values;
+    return ret;
+}
+
+function generate_bar_chart_data(title, names, labels, raw_data) {
+    var ret = {
+        title:title,
+        names:names,
+        labels:labels
+    };
+
+    ret['values'] = [];
+    for (var i = 0; i < names.length; ++i) {
+        var tmp = {
+            name: names[i],
+            type:'bar',
+            data:raw_data[i]
+        }
+        ret['values'].push(tmp);
+    }
+
+
+    return ret;
+}
+
+
+
 function show_user_star_average(kind) {
     if (kind == null) kind = 0;
     if (kind == 0) {
-        var chart_data = {};
-        chart_data['title'] = 'The Distribution Of Average Number Of User\'s Stars';
-        chart_data['name'] = 'The number of people';
-        chart_data['labels'] = ['0.0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'];
-        chart_data['values'] = [
-            {value: 0, name: '0.0'},
-            {value: 57, name: '0.5'},
-            {value: 0, name: '1.0'},
-            {value: 21448, name: '1.5'},
-            {value: 3930, name: '2.0'},
-            {value: 15113, name: '2.5'},
-            {value: 17065, name: '3.0'},
-            {value: 57128, name: '3.5'},
-            {value: 87008, name: '4.0'},
-            {value: 76000, name: '4.5'},
-            {value: 28088, name: '5.0'},
-        ];
+        var chart_data = generate_pie_chart_data('The Distribution Of Average Number Of User\'s Stars',
+            'The number of people',
+            ['0.0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'],
+            [0, 57, 0, 21448, 3930, 15113, 17065, 57128, 87008, 76000, 28088]
+        );
 
         for (var i = 0; i < chart_data['labels'].length; ++i) {
             chart_data['labels'][i] += ' stars';
@@ -134,30 +165,91 @@ function show_user_star_average(kind) {
         show_pie_chart('sm-chart-container', chart_data);
     }
     else if (kind==1){
-        var chart_data = {};
-        chart_data['title'] = 'The Distribution Of Average Number Of User\'s Stars';
-        chart_data['name'] = 'The number of people';
-        chart_data['labels'] = ['0.0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'];
+        //var chart_data = {};
+        //chart_data['title'] = 'The Distribution Of Average Number Of User\'s Stars';
+        //chart_data['names'] = ['The number of people'];
+        //chart_data['labels'] = ['0.0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'];
+
+
+        var chart_data = generate_bar_chart_data('The Distribution Of Average Number Of User\'s Stars',
+            ['The number of people'],
+            ['0.0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'],
+            [[0, 57, 0, 21448, 3930, 15112, 17065, 57128, 87008, 76000, 28088]]
+        );
+
+
         for (var i = 0; i < chart_data['labels'].length; ++i)
         chart_data['labels'][i] = 'Average Stars: ' + chart_data['labels'][i];
-        chart_data['values'] = [{
-            name: 'number of people',
-            type:'bar',
-            data: [0, 57, 0, 21448, 3930, 15112, 17065, 57128, 87008, 76000, 28088],
-            markPoint : {
-                data : [
-                    {name : 'maximum', value : 87008, xAxis: 8, yAxis: 87008, symbolSize:25},
-                    {name : 'minimum', value : 0, xAxis: 0, yAxis: 10, symbolSize:15},
-                    {name : 'minimum', value : 0, xAxis: 2, yAxis: 10, symbolSize:15}
-                ]
-            },
-            markLine : {
-                data : [
-                    {type : 'average', name : 'average'}
-                ]
-            }
-        }];
+        chart_data['values'][0]['markPoint'] = {
+            data : [
+                {name : 'maximum', value : 87008, xAxis: 8, yAxis: 87008, symbolSize:25},
+                {name : 'minimum', value : 0, xAxis: 0, yAxis: 10, symbolSize:15},
+                {name : 'minimum', value : 0, xAxis: 2, yAxis: 10, symbolSize:15}
+            ]
+        };
+        chart_data['values'][0]['markLine'] = {
+            data : [
+                {type : 'average', name : 'average'}
+            ]
+        };
+
+
+
+        //    = [{
+        //    name: 'The number of people',
+        //    type:'bar',
+        //    data: [0, 57, 0, 21448, 3930, 15112, 17065, 57128, 87008, 76000, 28088],
+        //    markPoint : {
+        //        data : [
+        //            {name : 'maximum', value : 87008, xAxis: 8, yAxis: 87008, symbolSize:25},
+        //            {name : 'minimum', value : 0, xAxis: 0, yAxis: 10, symbolSize:15},
+        //            {name : 'minimum', value : 0, xAxis: 2, yAxis: 10, symbolSize:15}
+        //        ]
+        //    },
+        //    markLine : {
+        //        data : [
+        //            {type : 'average', name : 'average'}
+        //        ]
+        //    }
+        //}];
 
         show_bar_chart('sm-chart-container', chart_data);
     }
+}
+
+function show_user_fans(kind) {
+    var raw_data = [[10, 354270], [20, 6880], [30, 2353], [40, 1107], [50, 612], [60, 339],
+        [70, 258], [80, 186], [90, 127], [100, 95], [110, 74], [120, 60], [130, 35], [140, 39]];
+    if (kind == null) kind = 0;
+    if (kind == 0) {
+        var labels = [];
+        var datas = [];
+        for (var i = 0; i < raw_data.length; ++i) {
+            labels.push('[' + (raw_data[i][0] - 10) + ', ' + raw_data[i][0] + ')');
+            datas.push(raw_data[i][1]);
+        }
+        console.log(labels);
+
+        var chart_data = generate_pie_chart_data('The Distribution of Number of User\'s Fans',
+        'The number of people', labels, datas
+        );
+        show_pie_chart('sm-chart-container', chart_data);
+    }
+    else if (kind == 1) {
+        var labels = [];
+        var datas = [];
+        var tmp = [];
+        for (var i = 0; i < raw_data.length; ++i) {
+            labels.push('[' + (raw_data[i][0] - 10) + ', ' + raw_data[i][0] + ')');
+            tmp.push(raw_data[i][1]);
+        }
+        datas.push(tmp);
+
+        var chart_data = generate_bar_chart_data('The Distribution of Number of User\'s Fans',
+            ['The number of people'], labels, datas);
+        show_bar_chart('sm-chart-container', chart_data);
+    }
+
+
+
 }

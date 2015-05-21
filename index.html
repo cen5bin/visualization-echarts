@@ -17,7 +17,7 @@
     <h1>Statistic</h1>
     <ul id="sm-side-bar-menu">
         <a href="#" onclick="cc('sm-menu-item-1', show_user_star_average)"><li id="sm-menu-item-1">Average Number of User's Stars</li></a>
-        <a href="#" onclick="cc('sm-menu-item-2', show_user_star_average)"><li id="sm-menu-item-2">Number of User's Fans</li></a>
+        <a href="#" onclick="cc('sm-menu-item-2', show_user_fans)"><li id="sm-menu-item-2">Number of User's Fans</li></a>
         <a href="#" onclick="cc('sm-menu-item-3', show_user_star_average)"><li id="sm-menu-item-3">Average Number of User's Stars</li></a>
         <a href="#" onclick="cc('sm-menu-item-4', show_user_star_average)"><li id="sm-menu-item-4">Average Number of User's Stars</li></a>
         <a href="#" onclick="cc('sm-menu-item-5', show_user_star_average)"><li id="sm-menu-item-5">Average Number of User's Stars</li></a>
@@ -62,13 +62,14 @@
         $('#' + id).attr('class', 'sm-menu-item-chosen');
         chose_menu_item = id;
         now_func = calback;
-        calback();
+//        calback();
+        choose_chart(0);
         active_tab = 'sm-tab-1';
     }
 
     function choose_chart(kind) {
         if (now_func == null) return;
-        if ('sm-tab-' + (kind + 1) == active_tab) return;
+//        if ('sm-tab-' + (kind + 1) == active_tab) return;
         clean_tab();
         active_tab = 'sm-tab-' + (kind + 1);
         $('#' + active_tab).attr('class', 'sm-top-bar-tab-active');
