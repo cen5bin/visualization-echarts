@@ -2,6 +2,11 @@
  * Created by wubincen on 15/5/21.
  */
 
+/**
+ * 绘制饼图
+ * @param container  图容器的div id
+ * @param chart_data 图数据
+ */
 function show_pie_chart(container, chart_data) {
 
     var max_value = 0;
@@ -63,6 +68,11 @@ function show_pie_chart(container, chart_data) {
 
 }
 
+/**
+ * 柱状图
+ * @param container div容器
+ * @param chart_data 图数据
+ */
 function show_bar_chart(container, chart_data) {
     var option = {
         title : {
@@ -105,6 +115,11 @@ function show_bar_chart(container, chart_data) {
 
 }
 
+/**
+ * 根据时间变化的图
+ * @param container 容器
+ * @param chart_data 数据
+ */
 function show_time_chart(container, chart_data) {
     var option = {
         timeline:{
@@ -115,9 +130,59 @@ function show_time_chart(container, chart_data) {
                 }
             },
             autoPlay : true,
-            playInterval : 1000
+            playInterval : 500
         },
         options:chart_data['datas']
+    };
+    var myChart = echarts.init(document.getElementById(container));
+    myChart.setOption(option);
+}
+
+/**
+ * 折线图
+ * @param container
+ * @param chart_data
+ */
+function show_line_chart(container, chart_data) {
+    var option = {
+        title : {
+            text: chart_data['title'],
+            //subtext: '纯属虚构'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:chart_data['names'],
+            y:'bottom'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                //mark : {show: true},
+                //dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : chart_data['labels']
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value}'
+                }
+            }
+        ],
+        series : chart_data['values']//[
     };
     var myChart = echarts.init(document.getElementById(container));
     myChart.setOption(option);
@@ -164,7 +229,7 @@ function generate_bar_chart_data(title, names, labels, raw_data) {
             name: names[i],
             type:'bar',
             data:raw_data[i]
-        }
+        };
         ret['values'].push(tmp);
     }
 
@@ -172,7 +237,30 @@ function generate_bar_chart_data(title, names, labels, raw_data) {
     return ret;
 }
 
-
+/**
+ * 生成折线图数据
+ * @param title
+ * @param names
+ * @param labels
+ * @param raw_data
+ */
+function generate_line_chart_data(title, names, labels, raw_data) {
+    var ret = {
+        title:title,
+        names:names,
+        labels:labels
+    };
+    ret['values'] = [];
+    for (var i = 0; i < names.length; ++i) {
+        var tmp = {
+            name: names[i],
+            type:'line',
+            data:raw_data[i]
+        };
+        ret['values'].push(tmp);
+    }
+    return ret;
+}
 
 function show_user_star_average(kind) {
     if (kind == null) kind = 0;
@@ -218,27 +306,6 @@ function show_user_star_average(kind) {
                 {type : 'average', name : 'average'}
             ]
         };
-
-
-
-        //    = [{
-        //    name: 'The number of people',
-        //    type:'bar',
-        //    data: [0, 57, 0, 21448, 3930, 15112, 17065, 57128, 87008, 76000, 28088],
-        //    markPoint : {
-        //        data : [
-        //            {name : 'maximum', value : 87008, xAxis: 8, yAxis: 87008, symbolSize:25},
-        //            {name : 'minimum', value : 0, xAxis: 0, yAxis: 10, symbolSize:15},
-        //            {name : 'minimum', value : 0, xAxis: 2, yAxis: 10, symbolSize:15}
-        //        ]
-        //    },
-        //    markLine : {
-        //        data : [
-        //            {type : 'average', name : 'average'}
-        //        ]
-        //    }
-        //}];
-
         show_bar_chart('sm-chart-container', chart_data);
     }
 }
@@ -362,6 +429,19 @@ function show_user_join(kind) {
         show_time_chart('sm-chart-container', chart_data);
     }
     else if (kind == 1) {
+        var raw_data = deal_with_user_join_year();
+        console.log(raw_data);
+        var labels = [];
+        var datas = [];
+        var tmp = [];
+        for (var i = 0; i < raw_data.length; ++i) {
+            labels.push((2004 + i) + '');
+            tmp.push(raw_data[i][1]);
+        }
+        datas.push(tmp);
+        console.log(datas);
 
+        var chart_data = generate_line_chart_data('The Number Of People Join', ['the number of people'], labels, datas);
+        show_line_chart('sm-chart-container', chart_data);
     }
 }

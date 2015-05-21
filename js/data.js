@@ -25,6 +25,10 @@ var user_join = [['2011-07', 6718], ['2011-08', 6144], ['2011-03', 6121], ['2013
     ['2005-11', 68], ['2005-09', 53], ['2005-04', 52], ['2005-05', 49], ['2005-03', 48], ['2005-06', 46], ['2004-10', 33],
     ['2005-02', 21], ['2005-01', 16], ['2004-12', 12], ['2004-11', 6]];
 
+var user_join_year = [['2011', 69210], ['2012', 63897], ['2013', 63483], ['2010', 50722], ['2014', 50505], ['2009', 32968],
+    ['2008', 19390], ['2007', 10676], ['2006', 3974], ['2005', 691], ['2004', 51]];
+
+
 function deal_with_user_join() {
     var ret = [];
     for (var i = 0; i < 11; ++i) {
@@ -40,5 +44,12 @@ function deal_with_user_join() {
         var month = parseInt(date.split('-')[1]) - 1;
         ret[year][month] = num;
     }
+    return ret;
+}
+
+function deal_with_user_join_year() {
+    var ret = [];
+    for (var i = 0; i < user_join_year.length; ++i) ret.push([]);
+    for (var i = 0; i < user_join_year.length; ++i) ret[parseInt(user_join_year[i][0])-2004] = user_join_year[i];
     return ret;
 }

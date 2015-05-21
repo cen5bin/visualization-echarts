@@ -58,19 +58,37 @@
         $('#' + active_tab).attr('class', 'sm-top-bar-tab');
     }
 
+    function generate_tabs(id) {
+        var target = '#sm-top-bar-button-container';
+        $(target).html('');
+        var index = parseInt(id.split('-')[3]);
+        var tabs = [];
+        if (index <= 2) {
+            tabs = ['Pie Chart', 'Bar Chart'];
+        }
+        else if (index == 3) {
+            tabs = ['Time Chart', 'Line Chart'];
+        }
+        for (var i = 0; i < tabs.length; ++i) {
+            var tmp = '';
+            if (i == 0) tmp = '-active';
+            $(target).append('<a href="#" onclick="choose_chart('+i+')"><div class="sm-top-bar-tab'+tmp+ '" id="sm-tab-'+(i+1)+'"><div class="vertical-align">'+ tabs[i] +'</div></div></a>');
+        }
+
+    }
+
     function cc(id, calback) {
+        generate_tabs(id);
         clean_menu();
         $('#' + id).attr('class', 'sm-menu-item-chosen');
         chose_menu_item = id;
         now_func = calback;
-//        calback();
         choose_chart(0);
         active_tab = 'sm-tab-1';
     }
 
     function choose_chart(kind) {
         if (now_func == null) return;
-//        if ('sm-tab-' + (kind + 1) == active_tab) return;
         clean_tab();
         active_tab = 'sm-tab-' + (kind + 1);
         $('#' + active_tab).attr('class', 'sm-top-bar-tab-active');
