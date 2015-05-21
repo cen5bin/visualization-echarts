@@ -105,6 +105,24 @@ function show_bar_chart(container, chart_data) {
 
 }
 
+function show_time_chart(container, chart_data) {
+    var option = {
+        timeline:{
+            data:chart_data['times'],
+            label : {
+                formatter : function(s) {
+                    return s.slice(0, 4);
+                }
+            },
+            autoPlay : true,
+            playInterval : 1000
+        },
+        options:chart_data['datas']
+    };
+    var myChart = echarts.init(document.getElementById(container));
+    myChart.setOption(option);
+}
+
 /**
  * 生成饼图数据
  * @param title 图的标题
@@ -125,6 +143,14 @@ function generate_pie_chart_data(title, name, labels, raw_data) {
     return ret;
 }
 
+/**
+ * 生成柱状图数据
+ * @param title
+ * @param names
+ * @param labels
+ * @param raw_data
+ * @returns {{title: *, names: *, labels: *}}
+ */
 function generate_bar_chart_data(title, names, labels, raw_data) {
     var ret = {
         title:title,
@@ -249,7 +275,93 @@ function show_user_fans(kind) {
             ['The number of people'], labels, datas);
         show_bar_chart('sm-chart-container', chart_data);
     }
+}
+
+function show_user_join(kind) {
+    if (kind == null) kind = 0;
+    if (kind == 0) {
+        var chart_data = {};
+        var raw_data = deal_with_user_join();
+        chart_data['times'] = [];
+        for (var i = 0; i < raw_data.length; ++i)
+        chart_data['times'].push((2004+i)+'');
+        chart_data['datas'] = [];
+        for (var i = 0; i < raw_data.length; ++i) {
+            var tmp = {
+                title:{
+                    text:'The Number of People Join in ' + (2004 + i)
+                },
+                tooltip : {'trigger':'axis'},
+                legend : {
+                    x:'right',
+                    'data':['the number of people'],
+                    'selected':{
+                        'the number of people':true,
+                    }
+                },
+                toolbox : {
+                    'show':true,
+                    orient : 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    'feature':{
+                        //'mark':{'show':true},
+                        //'dataView':{'show':true,'readOnly':false},
+                        'magicType':{'show':true,'type':['line','bar']},
+                        'restore':{'show':true},
+                        'saveAsImage':{'show':true}
+                    }
+                },
+                calculable : true,
+                grid : {'y':80,'y2':100},
+                xAxis : [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':[
+                        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                    ]
+                }],
+
+                yAxis : [
+                    {
+                        'type':'value',
+                        'name':'The Num of People',
+                        'max':7000
+                    }
+                ],
+                series:[
+                    {
+                        'name':'the number of people',
+                        'type':'bar',
+                        'markLine':{
+                            symbol : ['arrow','none'],
+                            symbolSize : [4, 2],
+                            itemStyle : {
+                                normal: {
+                                    lineStyle: {color:'orange'},
+                                    barBorderColor:'orange',
+                                    label:{
+                                        position:'left',
+                                        formatter:function(params){
+                                            return Math.round(params.value);
+                                        },
+                                        textStyle:{color:'orange'}
+                                    }
+                                }
+                            },
+                            'data':[{'type':'average','name':'average'}]
+                        },
+                        'data': raw_data[i]
+                    }
+                ]
+            };
+            chart_data['datas'].push(tmp);
+        }
 
 
+        show_time_chart('sm-chart-container', chart_data);
+    }
+    else if (kind == 1) {
 
+    }
 }
