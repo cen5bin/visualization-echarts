@@ -189,6 +189,9 @@ function show_line_chart(container, chart_data) {
 }
 
 
+
+var infos = {};
+
 function show_net_chart(container, chart_data) {
     var option = {
         title : {
@@ -198,6 +201,7 @@ function show_net_chart(container, chart_data) {
             y:'top'
         },
         tooltip : {
+            show: false,
             trigger: 'item',
             formatter: '{a} : {b}'
         },
@@ -260,29 +264,50 @@ function show_net_chart(container, chart_data) {
             }
         ]
     };
-    //var ecConfig = require('js/echarts-all.js');
-    //function focus(param) {
-    //    var data = param.data;
-    //    var links = option.series[0].links;
-    //    var nodes = option.series[0].nodes;
-    //    if (
-    //        data.source !== undefined
-    //        && data.target !== undefined
-    //    ) { //点击的是边
-    //        var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
-    //        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
-    //        console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
-    //    } else { // 点击的是点
-    //        console.log("选中了" + data.name + '(' + data.value + ')');
-    //    }
-    //}
-    var myChart = echarts.init(document.getElementById(container));
-    //myChart.on(ecConfig.EVENT.CLICK, focus)
 
-    //myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-    //    console.log(myChart.chart.force.getPosition());
-    //});
-    myChart.setOption(option);
+
+
+    require(
+        [
+            'echarts',
+            'echarts/chart/line',   // 按需加载所需图表，如需动态类型切换功能，别忘了同时加载相应图表
+            'echarts/chart/bar',
+            'echarts/chart/force'
+        ],
+        function (ec) {
+
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (data.source !== undefined && data.target !== undefined) { //点击的是边
+                    //$('#sm-chart-container').append('<div id="sm-chart-container-info">asd</div>');
+
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+                } else { // 点击的是点
+                    console.log("选中了" + data.name + '(' + data.value + ')');
+
+                    $('#sm-chart-info').html('Information: <br>' + infos[data.name]);
+                }
+            }
+            var myChart = echarts.init(document.getElementById(container));
+            myChart.on(ecConfig.EVENT.CLICK, focus)
+            //myChart.on(ecConfig.EVENT.HOVER, focus);
+            myChart.on(ecConfig.EVENT.MOUSEOVER, focus);
+
+
+
+            //myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+            //    console.log(myChart.chart.force.getPosition());
+            //});
+            myChart.setOption(option);
+            var myChart = ec.init(document.getElementById('main'));
+            myChart.setOption(option);
+}
+);
 
 
 }
@@ -555,6 +580,12 @@ function show_user_relationship(kind) {
 
         var mm = 0;
         for (var key in raw_data['nodes']) {
+
+            infos[raw_data['nodes'][key]['name']] = 'Name: ' + raw_data['nodes'][key]['name'] + '<br>' +
+            'Fans: ' + raw_data['nodes'][key]['fans'] + '<br>Stars: ' + raw_data['nodes'][key]['stars'] + '<br><br>'
+            + 'Votes:<br>&nbsp;&nbsp;Funny: ' + raw_data['nodes'][key]['votes']['funny'] + '<br>'
+            + '&nbsp;&nbsp;Useful: ' + raw_data['nodes'][key]['votes']['useful'] + '<br>&nbsp;&nbsp;Cool: ' + raw_data['nodes'][key]['votes']['cool'];
+
             if (raw_data['nodes'][key]['fans'] / 100 > mm) mm = raw_data['nodes'][key]['fans'] / 100 > mm;
             var tmp = {
                 category:raw_data['nodes'][key]['fans'] / 100,
@@ -593,7 +624,27 @@ function show_user_relationship(kind) {
         };
 
 
+        console.log('ooo');
+
+        var left = $('#sm-chart-container').offset().left;
+        var top = $('#sm-chart-container').offset().top;
+        var height = $('#sm-chart-container').height();
+        var width = $('#sm-chart-container').width();
+        var ww = 150;
+        var hh = 200;
+        left = left + width - ww;
+        top = top + height - hh;
+        console.log('zz');
+        $('body').append('<div id = "sm-chart-info" style=" left: ' + left +'px; top: ' +
+        top + 'px; width:' + ww +'px; height:'+ hh +'px;">Information:</div>');
+
 
         show_net_chart('sm-chart-container', chart_data);
+
+        console.log('uuu');
+
+
+
+
     }
 }

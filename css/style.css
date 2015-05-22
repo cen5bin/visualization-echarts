@@ -185,3 +185,17 @@ li {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
 }
+
+
+#sm-chart-info {
+    position: absolute;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    z-index: 2000000000;
+    font-weight: 100;
+    font-size: 16px;
+    line-height: 20px;
+    padding-left: 10px;
+    padding-top: 10px;
+    border-radius: 4px;
+}
