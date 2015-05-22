@@ -188,6 +188,106 @@ function show_line_chart(container, chart_data) {
     myChart.setOption(option);
 }
 
+
+function show_net_chart(container, chart_data) {
+    var option = {
+        title : {
+            text: chart_data['title'],
+            //subtext: '数据来自人立方',
+            x:'left',
+            y:'top'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: '{a} : {b}'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                restore : {show: true},
+                magicType: {show: true, type: ['force', 'chord']},
+                saveAsImage : {show: true}
+            }
+        },
+        legend: {
+            show: false,
+            x: 'right',
+            y: 'bottom',
+            data:chart_data['labels']
+        },
+        series : [
+            {
+                type:'force',
+                name : 'Relationship',
+                ribbonType: false,
+                categories : chart_data['categories'],
+                itemStyle: {
+                    normal: {
+                        label: {
+                            show: true,
+                            textStyle: {
+                                color: '#333'
+                            }
+                        },
+                        nodeStyle : {
+                            brushType : 'both',
+                            borderColor : 'rgba(255,215,0,0.4)',
+                            borderWidth : 1
+                        },
+                        linkStyle: {
+                            type: 'curve'
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: false
+                            // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                        },
+                        nodeStyle : {
+                            //r: 30
+                        },
+                        linkStyle : {}
+                    }
+                },
+                useWorker: false,
+                minRadius : 20,
+                maxRadius : 50,
+                gravity: 1.1,
+                scaling: 1.1,
+                //roam: 'move',
+                nodes:chart_data['nodes'],
+                links : chart_data['links']
+            }
+        ]
+    };
+    //var ecConfig = require('js/echarts-all.js');
+    //function focus(param) {
+    //    var data = param.data;
+    //    var links = option.series[0].links;
+    //    var nodes = option.series[0].nodes;
+    //    if (
+    //        data.source !== undefined
+    //        && data.target !== undefined
+    //    ) { //点击的是边
+    //        var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+    //        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+    //        console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+    //    } else { // 点击的是点
+    //        console.log("选中了" + data.name + '(' + data.value + ')');
+    //    }
+    //}
+    var myChart = echarts.init(document.getElementById(container));
+    //myChart.on(ecConfig.EVENT.CLICK, focus)
+
+    //myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+    //    console.log(myChart.chart.force.getPosition());
+    //});
+    myChart.setOption(option);
+
+
+}
+
+
 /**
  * 生成饼图数据
  * @param title 图的标题
@@ -443,5 +543,57 @@ function show_user_join(kind) {
 
         var chart_data = generate_line_chart_data('The Number Of People Join', ['the number of people'], labels, datas);
         show_line_chart('sm-chart-container', chart_data);
+    }
+}
+
+function show_user_relationship(kind) {
+    if (kind == null) kind = 0;
+    if (kind == 0) {
+        var raw_data = deal_with_user_relationship();
+        var nodes = [];
+        //var kk = 1;
+
+        var mm = 0;
+        for (var key in raw_data['nodes']) {
+            if (raw_data['nodes'][key]['fans'] / 100 > mm) mm = raw_data['nodes'][key]['fans'] / 100 > mm;
+            var tmp = {
+                category:raw_data['nodes'][key]['fans'] / 100,
+                name: raw_data['nodes'][key]['name'],
+                value:raw_data['nodes'][key]['fans'] / 20 + 1
+            };
+            nodes.push(tmp);
+        }
+
+        var links = [];
+        for (var i = 0; i < raw_data['edges'].length; ++i) {
+            //console.log(raw_data['edges'][i]);
+            var tmp = {
+                source: raw_data['nodes'][raw_data['edges'][i][0]]['name'],
+                target: raw_data['nodes'][raw_data['edges'][i][1]]['name'],
+                weight: raw_data['nodes'][raw_data['edges'][i][0]]['fans'] + raw_data['nodes'][raw_data['edges'][i][1]]['fans'],
+                name: 'Friend'
+            };
+
+            links.push(tmp);
+        }
+
+        var categories = [];
+        var labels = [];
+        for (var i = 0; i <= mm; ++i) {
+            categories.push({name:'level' + i});
+            labels.push('level' + i);
+        }
+
+        var chart_data = {
+            title: 'Relationship',
+            labels: labels,
+            categories:categories,
+            nodes: nodes,
+            links: links
+        };
+
+
+
+        show_net_chart('sm-chart-container', chart_data);
     }
 }

@@ -20,7 +20,7 @@
         <a href="#" onclick="cc('sm-menu-item-1', show_user_star_average)"><li id="sm-menu-item-1">Average Number of User's Stars</li></a>
         <a href="#" onclick="cc('sm-menu-item-2', show_user_fans)"><li id="sm-menu-item-2">Number of User's Fans</li></a>
         <a href="#" onclick="cc('sm-menu-item-3', show_user_join)"><li id="sm-menu-item-3">Number of User join</li></a>
-        <a href="#" onclick="cc('sm-menu-item-4', show_user_star_average)"><li id="sm-menu-item-4">Average Number of User's Stars</li></a>
+        <a href="#" onclick="cc('sm-menu-item-4', show_user_relationship)"><li id="sm-menu-item-4">Relationship</li></a>
         <a href="#" onclick="cc('sm-menu-item-5', show_user_star_average)"><li id="sm-menu-item-5">Average Number of User's Stars</li></a>
         <a href="#" onclick="cc('sm-menu-item-6', show_user_star_average)"><li id="sm-menu-item-6">Average Number of User's Stars</li></a>
         <a href="#"><li>Number of User's Fans</li></a>
@@ -68,6 +68,9 @@
         }
         else if (index == 3) {
             tabs = ['Time Chart', 'Line Chart'];
+        }
+        else if (index == 4) {
+            tabs = ['Net Chart'];
         }
         for (var i = 0; i < tabs.length; ++i) {
             var tmp = '';
