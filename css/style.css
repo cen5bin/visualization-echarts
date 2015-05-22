@@ -199,3 +199,30 @@ li {
     padding-top: 10px;
     border-radius: 4px;
 }
+
+#sm-search-form {
+    height: 60%;
+    /*float: right;*/
+    width: 200px;
+    /*background-color: red;*/
+    position: absolute;
+    right: 0;
+    top: 20%;
+
+}
+
+#sm-search-form input {
+    width: 100px;
+    height: 80%;
+    font-size: 16px;
+    outline: none;
+    padding-left: 10px;
+    /*margin: 0;*/
+}
+
+#sm-search-form button {
+    height: 80%;
+    background-color: white;
+    border: 1px solid #eeeeee;
+    outline: none;
+}

@@ -84,11 +84,12 @@ var user_relationship = [{"yelping_since": "2007-08", "votes": {"funny": 38, "us
     {"yelping_since": "2009-05", "votes": {"funny": 42, "useful": 81, "cool": 41}, "user_id": "1000", "name": "Aaron", "fans": 2, "average_stars": 3.93, "friends": ["82646", "317727", "250579", "54800", "187012", "124088", "60740", "163506", "39730", "6718", "221949", "64911", "360500", "30696", "139313", "210623", "17272", "351735", "44961", "25219", "101105", "19985", "89916", "10655", "139413"]}];
 
 
-function deal_with_user_relationship() {
+function deal_with_user_relationship(ddd) {
+    if (ddd == null) ddd = user_relationship;
     var nodes = {};
     var edges = [];
-    for (var i = 0; i < user_relationship.length; ++i) {
-        var data = user_relationship[i];
+    for (var i = 0; i < ddd.length; ++i) {
+        var data = ddd[i];
         var info = {
             date: data['yelping_since'],
             votes: data['votes'],

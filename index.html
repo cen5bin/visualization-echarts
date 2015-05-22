@@ -8,6 +8,8 @@
     <script src="js/echarts-all.js"></script>
     <script src="js/echarts.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/all_user.js"></script>
+    <script src="js/user_bussiness.js"></script>
     <script src="js/visualization.js"></script>
 </head>
 <body>
@@ -22,9 +24,9 @@
         <a href="#" onclick="cc('sm-menu-item-2', show_user_fans)"><li id="sm-menu-item-2">Number of User's Fans</li></a>
         <a href="#" onclick="cc('sm-menu-item-3', show_user_join)"><li id="sm-menu-item-3">Number of User join</li></a>
         <a href="#" onclick="cc('sm-menu-item-4', show_user_relationship)"><li id="sm-menu-item-4">Relationship</li></a>
-        <a href="#" onclick="cc('sm-menu-item-5', show_user_star_average)"><li id="sm-menu-item-5">Average Number of User's Stars</li></a>
-        <a href="#" onclick="cc('sm-menu-item-6', show_user_star_average)"><li id="sm-menu-item-6">Average Number of User's Stars</li></a>
-        <a href="#"><li>Number of User's Fans</li></a>
+        <!--<a href="#" onclick="cc('sm-menu-item-5', show_user_star_average)"><li id="sm-menu-item-5">Average Number of User's Stars</li></a>-->
+        <!--<a href="#" onclick="cc('sm-menu-item-6', show_user_star_average)"><li id="sm-menu-item-6">Average Number of User's Stars</li></a>-->
+        <!--<a href="#"><li>Number of User's Fans</li></a>-->
     </ul>
 </div>
 
@@ -37,6 +39,7 @@
             <a href="#" onclick="choose_chart(1)"><div class="sm-top-bar-tab" id="sm-tab-2"><div class="vertical-align">Bar Chart</div></div></a>
             <!--</div>-->
         </div>
+
     </div>
     <div id="sm-chart-container"></div>
 
@@ -79,7 +82,25 @@
             $(target).append('<a href="#" onclick="choose_chart('+i+')"><div class="sm-top-bar-tab'+tmp+ '" id="sm-tab-'+(i+1)+'"><div class="vertical-align">'+ tabs[i] +'</div></div></a>');
         }
 
+        if (index == 4)
+        $(target).append('<div id="sm-search-form"><input type="text" id="sm-search-text">&nbsp;<button onclick="search()">search</button></div>');
     }
+
+    function search() {
+        var user_id = $('#sm-search-text').val();
+        if (all_user[user_id] == null) {
+            alert('This id not exists');
+            return;
+        }
+        var user_relationship = [];
+        user_relationship.push(all_user[user_id]);
+        for (var i = 0; i < all_user[user_id]['friends'].length; ++i) {
+            var id = all_user[user_id]['friends'][i];
+            if (all_user[id] != null) user_relationship.push(all_user[id]);
+        }
+        show_user_relationship(0, deal_with_user_relationship(user_relationship));
+    }
+
 
     function cc(id, calback) {
         generate_tabs(id);
@@ -105,6 +126,7 @@
     }
 
     $(document).ready(function(){
+//        alert(user_bussiness['319921']);
         $('#sm-content').css('opacity', '0');
         $('#sm-content').animate({opacity:'1'}, 10, function(){
             cc('sm-menu-item-1', show_user_star_average);

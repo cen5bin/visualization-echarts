@@ -571,10 +571,11 @@ function show_user_join(kind) {
     }
 }
 
-function show_user_relationship(kind) {
+function show_user_relationship(kind, ddd) {
     if (kind == null) kind = 0;
     if (kind == 0) {
         var raw_data = deal_with_user_relationship();
+        if (ddd != null) raw_data = ddd;
         var nodes = [];
         //var kk = 1;
 
